@@ -49,7 +49,6 @@ void() main =
 	precache_file ("gfx/complete.lmp");
 	precache_file ("gfx/inter.lmp");
 
-	precache_file ("gfx/ranking.lmp");
 	precache_file ("gfx/vidmodes.lmp");
 	precache_file ("gfx/finale.lmp");
 	precache_file ("gfx/conback.lmp");
@@ -62,13 +61,7 @@ void() main =
 	precache_file ("gfx/menudot5.lmp");
 	precache_file ("gfx/menudot6.lmp");
 
-	precache_file ("gfx/menuplyr.lmp");
 	precache_file ("gfx/bigbox.lmp");
-	precache_file ("gfx/dim_modm.lmp");
-	precache_file ("gfx/dim_drct.lmp");
-	precache_file ("gfx/dim_ipx.lmp");
-	precache_file ("gfx/dim_tcp.lmp");
-	precache_file ("gfx/dim_mult.lmp");
 	precache_file ("gfx/mainmenu.lmp");
 	
 	precache_file ("gfx/box_tl.lmp");
@@ -89,22 +82,16 @@ void() main =
 	precache_file ("gfx/ttl_main.lmp");
 	precache_file ("gfx/ttl_cstm.lmp");
 	
-	precache_file ("gfx/mp_menu.lmp");
 	
-	precache_file ("gfx/netmen1.lmp");
-	precache_file ("gfx/netmen2.lmp");
-	precache_file ("gfx/netmen3.lmp");
-	precache_file ("gfx/netmen4.lmp");
-	precache_file ("gfx/netmen5.lmp");
 	
 	precache_file ("gfx/sell.lmp");
 	
-	precache_file ("gfx/help0.lmp");
-	precache_file ("gfx/help1.lmp");
-	precache_file ("gfx/help2.lmp");
-	precache_file ("gfx/help3.lmp");
-	precache_file ("gfx/help4.lmp");
-	precache_file ("gfx/help5.lmp");
+//	precache_file ("gfx/help0.lmp");
+//	precache_file ("gfx/help1.lmp");
+//	precache_file ("gfx/help2.lmp");
+//	precache_file ("gfx/help3.lmp");
+//	precache_file ("gfx/help4.lmp");
+//	precache_file ("gfx/help5.lmp");
 
 	precache_file ("gfx/pause.lmp");
 	precache_file ("gfx/loading.lmp");
@@ -112,15 +99,12 @@ void() main =
 	precache_file ("gfx/p_option.lmp");
 	precache_file ("gfx/p_load.lmp");
 	precache_file ("gfx/p_save.lmp");
-	precache_file ("gfx/p_multi.lmp");
 
 // sounds loaded by C code
 	precache_sound ("misc/menu1.wav");
 	precache_sound ("misc/menu2.wav");
 	precache_sound ("misc/menu3.wav");
 
-	precache_sound ("ambience/water1.wav");
-	precache_sound ("ambience/wind2.wav");
 
 // shareware
 	precache_file ("maps/start.bsp");
@@ -344,7 +328,7 @@ void() worldspawn =
 	precache_model ("progs/v_light.mdl");
 	
 	precache_model ("progs/victory.mdl");
-	
+	precache_model ("progs/s_ball.mdl");
 //
 // Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
 //

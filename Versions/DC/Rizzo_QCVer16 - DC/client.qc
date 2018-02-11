@@ -340,12 +340,20 @@ void() changelevel_touch =
 /*QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
 When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
 */
+
+.string altmap;
+
+void() changelevel_use =
+{
+self.map = self.altmap;
+}
+
 void() trigger_changelevel =
 {
 	if (!self.map)
-		objerror ("chagnelevel trigger doesn't have map");
-	
+		objerror ("chagnelevel trigger doesn't have map");	
 	InitTrigger ();
+self.use = changelevel_use;
 	self.touch = changelevel_touch;
 };
 
