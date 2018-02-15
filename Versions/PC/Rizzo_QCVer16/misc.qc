@@ -224,6 +224,66 @@ void() misc_explobox2 =
 
 float SPAWNFLAG_SUPERSPIKE	= 1;
 float SPAWNFLAG_LASER = 2;
+void() Laser_Touch =
+{
+	local vector org;
+	
+	if (other == self.owner)
+		return;		// don't explode on owner
+
+	if (pointcontents(self.origin) == CONTENT_SKY)
+	{
+		remove(self);
+		return;
+	}
+	
+	sound (self, CHAN_WEAPON, "enforcer/enfstop.wav", 1, ATTN_STATIC);
+	org = self.origin - 8*normalize(self.velocity);
+
+	if (other.health)
+	{
+		SpawnBlood (org, self.velocity*0.2, 15);
+		T_Damage (other, self, self.owner, 15);
+	}
+	else
+	{
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteCoord (MSG_BROADCAST, org_x);
+		WriteCoord (MSG_BROADCAST, org_y);
+		WriteCoord (MSG_BROADCAST, org_z);
+	}
+	
+	remove(self);	
+};
+
+void(vector org, vector vec) LaunchLaser =
+{
+	local	vector	vec;
+		
+	if (self.classname == "monster_enforcer")
+		sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
+
+	vec = normalize(vec);
+	
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.movetype = MOVETYPE_FLY;
+	newmis.solid = SOLID_BBOX;
+	newmis.effects = EF_DIMLIGHT;
+
+	setmodel (newmis, "progs/laser.mdl");
+	setsize (newmis, '0 0 0', '0 0 0');		
+
+	setorigin (newmis, org);
+
+	newmis.velocity = vec * 600;
+	newmis.angles = vectoangles(newmis.velocity);
+
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+	newmis.touch = Laser_Touch;
+};
 
 void(vector org, vector vec) LaunchLaser;
 
@@ -642,18 +702,8 @@ self.use = console_use;
 
 .string classmonster;
 
-void()monster_dog;
-void()monster_army;
-void()monster_demon1;
-void()monster_enforcer;
-void()monster_hell_knight;
-void()monster_fish;
-void()monster_knight;
-void()monster_ogre;
-void()monster_shalrath;
-void()monster_shambler;
-void()monster_tarbaby;
-void()monster_zombie;
+void()monster_slime_spawn;
+
 
 
 void() monster_spawn_use =
@@ -667,30 +717,8 @@ setorigin (monster, self.origin + '0 0 64');
 monster.classname = self.classmonster;
 
 monster.target = self.target;
-if (monster.classname == "monster_dog")
-monster.think = monster_dog;
-if (monster.classname == "monster_army")
-monster.think = monster_army;
-if (monster.classname == "monster_demon1")
-monster.think = monster_demon1;
-if (monster.classname == "monster_enforcer")
-monster.think = monster_enforcer;
-if (monster.classname == "monster_hell_knight")
-monster.think = monster_hell_knight;
-if (monster.classname == "monster_fish")
-monster.think = monster_fish;
-if (monster.classname == "monster_knight")
-monster.think = monster_knight;
-if (monster.classname == "monster_ogre")
-monster.think = monster_ogre;
-if (monster.classname == "monster_shalrath")
-monster.think = monster_shalrath;
-if (monster.classname == "monster_shambler")
-monster.think = monster_shambler;
-if (monster.classname == "monster_tarbaby")
-monster.think = monster_tarbaby;
-if (monster.classname == "monster_zombie")
-monster.think = monster_zombie;
+if (monster.classname == "monster_slime")
+monster.think = monster_slime_spawn;
 
 monster.nextthink = time + 0.1;
 
@@ -713,181 +741,19 @@ if (!self.wait)
 self.wait = 3;
 
 if (!self.classmonster);
-self.classmonster  = "monster_dog";
+self.classmonster  = "monster_slime";
 
-if (self.classmonster == "monster_dog")
+if (self.classmonster == "monster_slime")
 {
-	precache_model ("progs/h_dog.mdl");
-	precache_model ("progs/dog.mdl");
-	precache_sound ("dog/dattack1.wav");
-	precache_sound ("dog/ddeath.wav");
-	precache_sound ("dog/dpain1.wav");
-	precache_sound ("dog/dsight.wav");
-	precache_sound ("dog/idle.wav");
-}
-
-if (self.classmonster == "monster_army")
-{
-	precache_model ("progs/soldier.mdl");
-	precache_model ("progs/h_guard.mdl");
-	precache_model ("progs/gib1.mdl");
-	precache_model ("progs/gib2.mdl");
-	precache_model ("progs/gib3.mdl");
-	precache_sound ("soldier/death1.wav");
-	precache_sound ("soldier/idle.wav");
-	precache_sound ("soldier/pain1.wav");
-	precache_sound ("soldier/pain2.wav");
-	precache_sound ("soldier/sattck1.wav");
-	precache_sound ("soldier/sight1.wav");
-	precache_sound ("player/udeath.wav");		// gib death
-}
-if(self.classmonster == "monster_demon")
-{
-	precache_model ("progs/demon.mdl");
-	precache_model ("progs/h_demon.mdl");
-
-	precache_sound ("demon/ddeath.wav");
-	precache_sound ("demon/dhit2.wav");
-	precache_sound ("demon/djump.wav");
-	precache_sound ("demon/dpain1.wav");
-	precache_sound ("demon/idle1.wav");
-	precache_sound ("demon/sight2.wav");
-}
-if(self.classmonster == "monster_enforcer")
-{
-	precache_model2 ("progs/enforcer.mdl");
-	precache_model2 ("progs/h_mega.mdl");
-	precache_model2 ("progs/laser.mdl");
-
-	precache_sound2 ("enforcer/death1.wav");
-	precache_sound2 ("enforcer/enfire.wav");
-	precache_sound2 ("enforcer/enfstop.wav");
-	precache_sound2 ("enforcer/idle1.wav");
-	precache_sound2 ("enforcer/pain1.wav");
-	precache_sound2 ("enforcer/pain2.wav");
-	precache_sound2 ("enforcer/sight1.wav");
-	precache_sound2 ("enforcer/sight2.wav");
-	precache_sound2 ("enforcer/sight3.wav");
-	precache_sound2 ("enforcer/sight4.wav");
- }	
-
-if(self.classmonster == "monster_hellknight")
-{
-	precache_model2 ("progs/hknight.mdl");
-	precache_model2 ("progs/k_spike.mdl");
-	precache_model2 ("progs/h_hellkn.mdl");
-
-	
-	precache_sound2 ("hknight/attack1.wav");
-	precache_sound2 ("hknight/death1.wav");
-	precache_sound2 ("hknight/pain1.wav");
-	precache_sound2 ("hknight/sight1.wav");
-	precache_sound ("hknight/hit.wav");		// used by C code, so don't sound2
-	precache_sound2 ("hknight/slash1.wav");
-	precache_sound2 ("hknight/idle.wav");
-	precache_sound2 ("hknight/grunt.wav");
-
-	precache_sound ("knight/sword1.wav");
-	precache_sound ("knight/sword2.wav");
-	
-}
-if(self.classmonster == "monster_zombie")
-{
-	precache_model ("progs/zombie.mdl");
-	precache_model ("progs/h_zombie.mdl");
-	precache_model ("progs/zom_gib.mdl");
-
-	precache_sound ("zombie/z_idle.wav");
-	precache_sound ("zombie/z_idle1.wav");
-	precache_sound ("zombie/z_shot1.wav");
-	precache_sound ("zombie/z_gib.wav");
-	precache_sound ("zombie/z_pain.wav");
-	precache_sound ("zombie/z_pain1.wav");
-	precache_sound ("zombie/z_fall.wav");
-	precache_sound ("zombie/z_miss.wav");
-	precache_sound ("zombie/z_hit.wav");
-	precache_sound ("zombie/idle_w2.wav");
+	precache_model ("progs/slime.mdl");
+	precache_sound ("slime/gib.wav");
+	precache_sound ("slime/hitback.wav");
+	precache_sound ("slime/movement.wav");
+	precache_sound ("slime/s_gib.wav");
+	precache_sound ("slime/die.wav");
 }
 
 
-if(self.classmonster == "monster_ogre")
-{
-	precache_model ("progs/ogre.mdl");
-	precache_model ("progs/h_ogre.mdl");
-	precache_model ("progs/grenade.mdl");
-
-	precache_sound ("ogre/ogdrag.wav");
-	precache_sound ("ogre/ogdth.wav");
-	precache_sound ("ogre/ogidle.wav");
-	precache_sound ("ogre/ogidle2.wav");
-	precache_sound ("ogre/ogpain1.wav");
-	precache_sound ("ogre/ogsawatk.wav");
-	precache_sound ("ogre/ogwake.wav");
-}
-
-if(self.classmonster == "monster_fish")
-{
-	precache_model2 ("progs/fish.mdl");
-
-	precache_sound2 ("fish/death.wav");
-	precache_sound2 ("fish/bite.wav");
-	precache_sound2 ("fish/idle.wav");
-}
-if(self.classmonster == "monster_knight")
-{
-
-	precache_model ("progs/knight.mdl");
-	precache_model ("progs/h_knight.mdl");
-
-	precache_sound ("knight/kdeath.wav");
-	precache_sound ("knight/khurt.wav");
-	precache_sound ("knight/ksight.wav");
-	precache_sound ("knight/sword1.wav");
-	precache_sound ("knight/sword2.wav");
-	precache_sound ("knight/idle.wav");
-}
-if(self.classmonster == "monster_shalrath")
-{
-	precache_model2 ("progs/shalrath.mdl");
-	precache_model2 ("progs/h_shal.mdl");
-	precache_model2 ("progs/v_spike.mdl");
-	
-	precache_sound2 ("shalrath/attack.wav");
-	precache_sound2 ("shalrath/attack2.wav");
-	precache_sound2 ("shalrath/death.wav");
-	precache_sound2 ("shalrath/idle.wav");
-	precache_sound2 ("shalrath/pain.wav");
-	precache_sound2 ("shalrath/sight.wav");
-	
-}
-if(self.classmonster == "monster_shambler")
-{
-	precache_model ("progs/shambler.mdl");
-	precache_model ("progs/s_light.mdl");
-	precache_model ("progs/h_shams.mdl");
-	precache_model ("progs/bolt.mdl");
-	
-	precache_sound ("shambler/sattck1.wav");
-	precache_sound ("shambler/sboom.wav");
-	precache_sound ("shambler/sdeath.wav");
-	precache_sound ("shambler/shurt2.wav");
-	precache_sound ("shambler/sidle.wav");
-	precache_sound ("shambler/ssight.wav");
-	precache_sound ("shambler/melee1.wav");
-	precache_sound ("shambler/melee2.wav");
-	precache_sound ("shambler/smack.wav");
-}
-
-if(self.classmonster == "monster_tarbaby")
-{
-
-	precache_model2 ("progs/tarbaby.mdl");
-
-	precache_sound2 ("blob/death1.wav");
-	precache_sound2 ("blob/hit1.wav");
-	precache_sound2 ("blob/land1.wav");
-	precache_sound2 ("blob/sight1.wav");
-	}
 self.use = monster_spawn_use;
 
-};///////// 
+};/////// 

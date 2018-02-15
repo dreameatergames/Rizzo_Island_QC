@@ -25,7 +25,6 @@ void() SUB_regen =
 {
 	self.model = self.mdl;		// restore original model
 	self.solid = SOLID_TRIGGER;	// allow it to be touched again
-	sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);	// play respawn sound
 	setorigin (self, self.origin);
 };
 
@@ -1221,7 +1220,6 @@ void() BackpackTouch =
 	
 	sprint (other, "\n");
 // backpack touch sound
-	sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 
 // change to a better weapon if appropriate
@@ -1240,39 +1238,4 @@ void() BackpackTouch =
 	W_SetCurrentAmmo ();
 };
 
-/*
-===============
-DropBackpack
-===============
-*/
-void() DropBackpack =
-{
-	local entity	item;
 
-	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells))
-		return;	// nothing in it
-
-	item = spawn();
-	item.origin = self.origin - '0 0 24';
-	
-	item.items = self.weapon;
-
-	item.ammo_shells = self.ammo_shells;
-	item.ammo_nails = self.ammo_nails;
-	item.ammo_rockets = self.ammo_rockets;
-	item.ammo_cells = self.ammo_cells;
-
-	item.velocity_z = 300;
-	item.velocity_x = -100 + (random() * 200);
-	item.velocity_y = -100 + (random() * 200);
-	
-	item.flags = FL_ITEM;
-	item.solid = SOLID_TRIGGER;
-	item.movetype = MOVETYPE_TOSS;
-	setmodel (item, "progs/backpack.mdl");
-	setsize (item, '-16 -16 0', '16 16 56');
-	item.touch = BackpackTouch;
-	
-	item.nextthink = time + 120;	// remove after 2 minutes
-	item.think = SUB_Remove;
-};

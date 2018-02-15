@@ -241,7 +241,7 @@ void() army_die =
 // check for gib
 	if (self.health < -35)
 	{
-		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NORM);
 		ThrowHead ("progs/h_guard.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib2.mdl", self.health);
@@ -280,7 +280,7 @@ void() monster_army =
 	precache_sound ("soldier/sattck1.wav");
 	precache_sound ("soldier/sight1.wav");
 
-	precache_sound ("player/udeath.wav");		// gib death
+	precache_sound ("player/gib.wav");		// gib death
 
 
 	self.solid = SOLID_SLIDEBOX;

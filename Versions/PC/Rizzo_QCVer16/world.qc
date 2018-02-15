@@ -184,12 +184,12 @@ void() worldspawn =
 	}
 	if (self.model == "maps/intcut.bsp")
 	{
-		localcmd("r_drawviewmodel 0\n chase_active 0\n sbar 0\n");
+		localcmd("r_drawviewmodel 0\n chase_active 0\n sbar_alpha_fg 0\n sbar_alpha_bg 0\n");
 
 	}
 	if (self.model == "maps/menu.bsp")
 	{
-		localcmd("r_drawviewmodel 0\n chase_active 0\n sbar 0\n");
+		localcmd("r_drawviewmodel 0\n chase_active 0\n sbar_alpha_fg 0\n sbar_alpha_bg 0\n");
 
 	}
 	if (self.model == "maps/e1m1.bsp")
@@ -199,8 +199,8 @@ void() worldspawn =
 //		cvar_set ("sbar", "0");
 //		cvar_set ("r_drawviewmodel", "0");
 //		cvar_set ("sv_makaqu", "1");
-		cvar_set ("r_maxsurfs", "3000");
-		cvar_set ("r_maxedges", "5000");
+//		cvar_set ("r_maxsurfs", "3000");
+//		cvar_set ("r_maxedges", "5000");
 		cvar_set ("bgmbuffer", "16384");
 		cvar_set ("r_wateralpha", "1");
 		cvar_set ("chase_active", "1");
@@ -216,10 +216,10 @@ void() worldspawn =
 		cvar_set ("r_maxedges", "5000");
 		cvar_set ("bgmbuffer", "16384");
 		cvar_set ("cl_rollangle", "0");
-		cvar_set ("d_mipcap", "3");
-		cvar_set ("d_mipscale", "40");
-		cvar_set ("sbar_alpha_bg", "0");
-		cvar_set ("sbar_alpha_fg", "0");
+//		cvar_set ("d_mipcap", "3");
+//		cvar_set ("d_mipscale", "40");
+//		cvar_set ("sbar_alpha_bg", "0");
+//		cvar_set ("sbar_alpha_fg", "0");
 // the area based ambient sounds MUST be the first precache_sounds
 
 // player precaches	
@@ -228,24 +228,15 @@ void() worldspawn =
 // sounds used from C physics code
 
 // setup precaches allways needed
-	precache_sound ("items/itembk2.wav");		// item respawn sound
 	precache_sound ("player/jump.wav");			// player jump
 	precache_sound ("player/f_land.wav");			// player landing
-	precache_sound ("player/drown1.wav");		// drowning pain
-	precache_sound ("player/drown2.wav");		// drowning pain
-	precache_sound ("player/gasp1.wav");		// gasping for air
-	precache_sound ("player/gasp2.wav");		// taking breath
-	precache_sound ("player/h2odeath.wav");		// drowning death
 
 //	precache_sound ("cut/cut1.wav");			// cutscene
 	precache_sound ("misc/talk.wav");			// talk
-	precache_sound ("weapons/lock4.wav");		// ammo pick up
 	precache_sound ("weapons/pickup.wav");		// weapon up
 
-	precache_sound ("misc/power.wav");			//lightning for boss
 
 // player gib sounds
-	precache_sound ("player/gib.wav");			// player gib sound
 
 // player pain sounds
 
@@ -275,37 +266,17 @@ void() worldspawn =
 	precache_model ("progs/player.mdl");
 	precache_model ("progs/eyes.mdl");
 	precache_model ("progs/h_player.mdl");
-	precache_model ("progs/gib1.mdl");
-	precache_model ("progs/gib2.mdl");
-	precache_model ("progs/gib3.mdl");
 
 	precache_model ("progs/s_bubble.spr");	// drowning bubbles
 	precache_model ("progs/s_explod.spr");	// sprite explosion
 	precache_model ("progs/title.spr");	// sprite explosion
 	
-	precache_model ("progs/v_axe.mdl");
-	precache_model ("progs/v_shot.mdl");
-	precache_model ("progs/v_nail.mdl");
-	precache_model ("progs/v_rock.mdl");
-	precache_model ("progs/v_shot2.mdl");
-	precache_model ("progs/v_nail2.mdl");
-	precache_model ("progs/v_rock2.mdl");
 
-	precache_model ("progs/bolt.mdl");		// for lightning gun
-	precache_model ("progs/bolt2.mdl");		// for lightning gun
-	precache_model ("progs/bolt3.mdl");		// for boss shock
-	precache_model ("progs/lavaball.mdl");	// for testing
-	
-	precache_model ("progs/missile.mdl");
-	precache_model ("progs/grenade.mdl");
-	precache_model ("progs/spike.mdl");
-	precache_model ("progs/s_spike.mdl");
 
-	precache_model ("progs/backpack.mdl");
 
-	precache_model ("progs/zom_gib.mdl");
+//	precache_model ("progs/spike.mdl");
+//	precache_model ("progs/s_spike.mdl");
 
-	precache_model ("progs/v_light.mdl");
 	
 	precache_model ("progs/victory.mdl");
 	precache_model ("progs/s_ball.mdl");

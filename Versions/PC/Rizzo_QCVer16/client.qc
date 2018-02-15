@@ -851,7 +851,8 @@ void() WaterMove =
 		self.air_finished = time + 12;
 		self.dmg = 2;
 	}
-	else if (self.air_finished < time)
+/*
+else if (self.air_finished < time)
 	{	// drown!
 		if (self.pain_finished < time)
 		{
@@ -862,7 +863,7 @@ void() WaterMove =
 			self.pain_finished = time + 1;
 		}
 	}
-	
+*/	
 	if (!self.waterlevel)
 	{
 		if (self.flags & FL_INWATER)
