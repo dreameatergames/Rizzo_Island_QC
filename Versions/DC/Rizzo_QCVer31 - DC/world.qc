@@ -239,6 +239,9 @@ BotInit();  // FrikBot
 	precache_model ("progs/grenade.mdl");
 	precache_model ("progs/spike.mdl");
 	precache_model ("progs/s_spike.mdl");
+	precache_model ("progs/cdbox_p1.mdl");
+	precache_model ("progs/cdbox_p2.mdl");
+	precache_model ("progs/cdbox_p3.mdl");
 
 	precache_model ("progs/backpack.mdl");
 
@@ -286,13 +289,13 @@ BotInit();  // FrikBot
 	lightstyle(5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
 	
 	// 6 FLICKER (second variety)
-	lightstyle(6, "nmonqnmomnmomomno");
+	lightstyle(8, "nmonqnmomnmomomno");
 	
 	// 7 CANDLE (second variety)
 	lightstyle(7, "mmmaaaabcdefgmmmmaaaammmaamm");
 	
 	// 8 CANDLE (third variety)
-	lightstyle(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
+	lightstyle(6, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
 	
 	// 9 SLOW STROBE (fourth variety)
 	lightstyle(9, "aaaaaaaazzzzzzzz");

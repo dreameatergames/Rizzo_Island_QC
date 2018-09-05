@@ -1,4 +1,4 @@
-
+ 
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
@@ -842,30 +842,44 @@ void() cdsprite_touch =
 if (other.classname != "player")
 return;
 other.ammo_shells += 1;
+
 SUB_UseTargets();
-sound (other, CHAN_ITEM,self.noise, 1, ATTN_NORM);
+sound (self, CHAN_ITEM,"misc/pickup.wav", 1, 1);
 	local entity	stemp;
 	stemp = self;
 	self = other;
 	W_SetCurrentAmmo();
 	self = stemp;
+if(other.ammo_shells >= totalboxes )
+centerprint(other, "You Collected All the CD's!\n\n\n Bonus Stage Unlocked!");
+
 remove (self);
 };
+
+void()cdsprite_think = 
+{
+totalboxes = totalboxes + 1;
+}
 
 void() cdsprite =
 {
 precache_model ("progs/cd_col.spr");
 precache_sound ("misc/pickup.wav");
-self.noise = "misc/pickup.wav";
+//self.noise = "misc/pickup.wav";
+
 setmodel (self,"progs/cd_col.spr");
 self.solid = SOLID_TRIGGER;
 setsize (self, '-8 -8 -8', ' 8 8 8'); 
 self.touch = cdsprite_touch;
+self.think = cdsprite_think;
+self.nextthink = time + random() * 1;
 };
 
 void()cditem_touchable =
 {
 self.touch = cdsprite_touch;
+self.think = SUB_Remove;
+self.nextthink = time + 30;
 };
 
 void(entity ebox) cd_spawn =
@@ -880,6 +894,7 @@ cdc = 3;
 while (cdc > 0)
 {		
 	cditem = spawn();
+	cditem.target =  ebox.target;
 	cditem.origin = ebox.origin + '0 0 24';
 	cditem.owner = self;
 	setmodel (cditem,"progs/cd_col.spr");
@@ -893,11 +908,36 @@ while (cdc > 0)
 	cdc = cdc - 1;
 }
 };
+
+void(entity ebox, string dmodel) debris_spawn =
+{
+local entity debris;
+	debris = spawn();
+	debris.origin = ebox.origin + '0 0 24';
+	setmodel (debris,dmodel);
+	debris.solid = SOLID_TRIGGER;
+	debris.movetype = MOVETYPE_TOSS;
+	debris.velocity_x =crandom() * 150; 
+	debris.velocity_y =crandom() * 150; 
+	debris.velocity_z = 75 + crandom() * 250;
+	debris.think= SUB_Remove;
+	debris.nextthink =  time + 30;
+};
+
 void() box_die =
 {
 cd_spawn (self);
-sound (self, CHAN_AUTO, self.noise, 1, ATTN_NORM);
+debris_spawn (self,"progs/cdbox_p1.mdl");
+debris_spawn (self,"progs/cdbox_p2.mdl");
+debris_spawn (self,"progs/cdbox_p3.mdl");
+sound (self, CHAN_ITEM, "misc/box.wav", 1, ATTN_NORM);
 remove (self);
+
+};
+
+void() cdbox_counter = 
+{
+totalboxes = totalboxes + 3;
 
 };
 
@@ -907,7 +947,7 @@ precache_model ("progs/cd_col.spr");
 precache_model ("progs/cdbox.mdl");
 precache_sound ("misc/pickup.wav");
 precache_sound ("misc/box.wav");
-self.noise = "misc/box.wav";
+//self.noise = "misc/box.wav";
 
 setmodel (self,"progs/cdbox.mdl");
 self.solid = SOLID_BBOX;
@@ -915,6 +955,8 @@ self.health = 1;
 self.takedamage = DAMAGE_YES;
 setsize (self, '-12 -12 0', ' 12 12 24'); 
 self.th_die = box_die;
+self.think = cdbox_counter;
+self.nextthink = time + random() * 1;
 };
 
 void() static_model =

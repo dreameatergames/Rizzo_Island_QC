@@ -239,6 +239,9 @@ BotInit();  // FrikBot
 	precache_model ("progs/grenade.mdl");
 	precache_model ("progs/spike.mdl");
 	precache_model ("progs/s_spike.mdl");
+	precache_model ("progs/cdbox_p1.mdl");
+	precache_model ("progs/cdbox_p2.mdl");
+	precache_model ("progs/cdbox_p3.mdl");
 
 	precache_model ("progs/backpack.mdl");
 

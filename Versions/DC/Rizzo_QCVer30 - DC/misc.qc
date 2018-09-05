@@ -1,4 +1,4 @@
-
+ 
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
@@ -835,13 +835,15 @@ if (self.classmonster == "monster_slime")
 self.use = monster_spawn_use;
 
 };
-
+float totalboxes;
+.float pltotalboxes;
 void() cdsprite_touch =
 {
 
 if (other.classname != "player")
 return;
 other.ammo_shells += 1;
+
 SUB_UseTargets();
 sound (other, CHAN_ITEM,self.noise, 1, ATTN_NORM);
 	local entity	stemp;
@@ -849,6 +851,9 @@ sound (other, CHAN_ITEM,self.noise, 1, ATTN_NORM);
 	self = other;
 	W_SetCurrentAmmo();
 	self = stemp;
+if(other.ammo_shells >= totalboxes )
+centerprint(other, "You Collected All the CD's!\n\n\n Bonus Stage Unlocked!");
+
 remove (self);
 };
 
@@ -866,6 +871,8 @@ self.touch = cdsprite_touch;
 void()cditem_touchable =
 {
 self.touch = cdsprite_touch;
+self.think = SUB_Remove;
+self.nextthink = time + 30;
 };
 
 void(entity ebox) cd_spawn =
@@ -893,11 +900,36 @@ while (cdc > 0)
 	cdc = cdc - 1;
 }
 };
+
+void(entity ebox, string dmodel) debris_spawn =
+{
+local entity debris;
+	debris = spawn();
+	debris.origin = ebox.origin + '0 0 24';
+	setmodel (debris,dmodel);
+	debris.solid = SOLID_TRIGGER;
+	debris.movetype = MOVETYPE_TOSS;
+	debris.velocity_x =crandom() * 150; 
+	debris.velocity_y =crandom() * 150; 
+	debris.velocity_z = 75 + crandom() * 250;
+	debris.think= SUB_Remove;
+	debris.nextthink =  time + 30;
+};
+
 void() box_die =
 {
 cd_spawn (self);
+debris_spawn (self,"progs/cdbox_p1.mdl");
+debris_spawn (self,"progs/cdbox_p2.mdl");
+debris_spawn (self,"progs/cdbox_p3.mdl");
 sound (self, CHAN_AUTO, self.noise, 1, ATTN_NORM);
 remove (self);
+
+};
+
+void() cdbox_counter = 
+{
+totalboxes = totalboxes + 3;
 
 };
 
@@ -915,6 +947,8 @@ self.health = 1;
 self.takedamage = DAMAGE_YES;
 setsize (self, '-12 -12 0', ' 12 12 24'); 
 self.th_die = box_die;
+self.think = cdbox_counter;
+self.nextthink = time + random() * 1;
 };
 
 void() static_model =
