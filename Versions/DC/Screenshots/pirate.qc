@@ -243,7 +243,7 @@ void() pirate_die =
 
 void() monster_pirate_spawn =
 {	
-	self.skin  = rint (random() * 28);
+	self.skin  = rint (random() * 30);
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 

@@ -154,7 +154,7 @@ void() ExitIntermission =
 			if (!cvar("registered"))
 			{
 				WriteByte (MSG_ALL, SVC_FINALE);
-				WriteString (MSG_ALL, "Adventure Awaits In the Full Game!\n Coming Late 2019-Early 2020\n to Dreamcast and PC");
+				WriteString (MSG_ALL, "Adventure Awaits In the Full Game!\n Coming Late 2018-Early 2019\n to Dreamcast and PC");
 			}
 			else
 			{
