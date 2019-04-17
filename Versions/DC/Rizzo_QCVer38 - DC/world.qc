@@ -234,8 +234,8 @@ void() worldspawn =
 	precache_model ("progs/pirate.mdl");
 	precache_sound ("pirate/death1.wav");
 	precache_sound ("pirate/idle.wav");
-	precache_sound ("pirate/pain1.wav");
-	precache_sound ("pirate/pain2.wav");
+//	precache_sound ("pirate/pain1.wav");
+//	precache_sound ("pirate/pain2.wav");
 	precache_sound ("pirate/sattck1.wav");
 	precache_sound ("pirate/sight1.wav");
 

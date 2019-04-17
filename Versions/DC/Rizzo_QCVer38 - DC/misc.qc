@@ -55,13 +55,19 @@ void() light =
 	}
 };
 
-/*QUAKED light_fluoro (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Non-displayed light.
+
+/*QUAKED light_globe (0 1 0) (-8 -8 -8) (8 8 8)
+Sphere globe light.
 Default light value is 300
 Default style is 0
-If targeted, it will toggle between on or off.
-Makes steady fluorescent humming sound
 */
+void() light_globe =
+{
+	precache_model ("progs/s_light.spr");
+	setmodel (self, "progs/s_light.spr");
+	makestatic (self);
+};
+
 void() FireAmbient =
 {
 	precache_sound ("ambience/fire.wav");
@@ -90,28 +96,6 @@ void() light_tiki_torch =
 	precache_model ("progs/torchx/torch1.mdl");
 	setmodel (self, "progs/torchx/torch1.mdl");
 	self.frame = 1;
-	FireAmbient ();
-	makestatic (self);
-};
-
-/*QUAKED light_flame_small_yellow (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Small yellow flame ball
-*/
-void() light_flame_small_yellow =
-{
-	precache_model ("progs/torchx/torch1.mdl");
-	setmodel (self, "progs/torchx/torch1.mdl");
-	FireAmbient ();
-	makestatic (self);
-};
-
-/*QUAKED light_flame_small_white (0 1 0) (-10 -10 -40) (10 10 40) START_OFF
-Small white flame ball
-*/
-void() light_torch_small_white =
-{
-	precache_model ("progs/torchx/bonfire.mdl");
-	setmodel (self, "progs/torchx/bonfire.mdl");
 	FireAmbient ();
 	makestatic (self);
 };
@@ -170,6 +154,7 @@ void() trap_spikeshooter =
 	if (self.spawnflags & SPAWNFLAG_LASER)
 	{
 		precache_model2 ("progs/laser.mdl");
+		
 	}
 	else
 		precache_sound ("misc/spike2.wav");
@@ -292,11 +277,11 @@ self.use = console_use;
 
 void()monster_slime_spawn;
 
+void()monster_pirate_spawn;
 
 
 void() monster_spawn_use =
 {
-self.effects = 256;
 
 self.cnt -= 1;
 local entity monster;
@@ -305,8 +290,14 @@ setorigin (monster, self.origin + '0 0 64');
 monster.classname = self.classmonster;
 
 monster.target = self.target;
+
 if (monster.classname == "monster_slime")
+{
+monster.skin = self.skin;
 monster.think = monster_slime_spawn;
+}
+if (monster.classmonster == "monster_pirate")
+monster.think = monster_pirate_spawn;
 
 monster.nextthink = time + 0.1;
 
@@ -335,11 +326,28 @@ if (self.classmonster == "monster_slime")
 {
 	precache_model ("progs/slime.mdl");
 	precache_sound ("slime/gib.wav");
+	precache_sound ("slime/hit.wav");
 	precache_sound ("slime/hitback.wav");
 	precache_sound ("slime/movement.wav");
 	precache_sound ("slime/die.wav");
 }
 
+if (self.classmonster == "monster_pirate")
+{
+	precache_model ("progs/pirate.mdl");
+	precache_model ("progs/gib1.mdl");
+	precache_model ("progs/gib2.mdl");
+	precache_model ("progs/gib3.mdl");
+
+	precache_sound ("pirate/death1.wav");
+	precache_sound ("pirate/idle.wav");
+	precache_sound ("pirate/pain1.wav");
+	precache_sound ("pirate/pain2.wav");
+	precache_sound ("pirate/sattck1.wav");
+	precache_sound ("pirate/sight1.wav");
+
+	precache_sound ("player/udeath.wav");		// gib death
+}	
 
 self.use = monster_spawn_use;
 

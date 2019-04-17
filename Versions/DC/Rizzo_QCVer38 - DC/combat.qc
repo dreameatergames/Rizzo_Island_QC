@@ -290,3 +290,4 @@ void(entity attacker, float damage) T_BeamDamage =
 		head = head.chain;
 	}
 };
+

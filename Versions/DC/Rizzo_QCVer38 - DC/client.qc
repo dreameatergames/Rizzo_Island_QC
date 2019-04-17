@@ -518,7 +518,10 @@ void() PutClientInServer =
 	spawn_tdeath (self.origin, self);
 
 //	stuffcmd(self, "impulse 15\n");            // 	chase toggle
-
+	stuffcmd(self, "m_forward 1\n");
+	stuffcmd(self, "m_pitch 0.022\n");
+	stuffcmd(self, "m_side 0.8\n");
+	stuffcmd(self, "m_yaw 0.022\n");
 };
 
 
