@@ -113,6 +113,127 @@ void() trigger_camera =
 	InitTrigger ();
 	self.touch = camon_touch;
 };
+.entity rizzoplayer;
+.string targetcam1;
+.string targetcam2;
+.string targetcam3;
 
+.string targetnamecam1;
+.string targetnamecam2;
+.string targetnamecam3;
+
+.float timecam1;
+.float timecam2;
+.float timecam3;
+
+void() info_cutscene_off =
+{
+	self.rizzoplayer.static_camera = 0;
+	stuffcmd(self.rizzoplayer, "m_forward 1\n");
+	stuffcmd(self.rizzoplayer, "m_pitch 0.022\n");
+	stuffcmd(self.rizzoplayer, "m_side 0.8\n");
+	stuffcmd(self.rizzoplayer, "m_yaw 0.022\n");
+
+};
+
+void() info_cutscene_think2 =
+{
+	local vector camorg, camangles;	
+	local entity cam;
+	cam = find (world, targetnamecam3, self.targetcam3);
+	camorg = cam.origin;
+	camangles =  cam.angles;
+	self.rizzoplayer.static_camera_origin = camorg;
+
+	WriteByte(1, SVC_SETANGLE);
+	WriteAngle(1, camangles_x);
+	WriteAngle(1, camangles_y);
+	WriteAngle(1, camangles_z); 
+	self.nextthink = time + self.timecam3;
+	self.think = info_cutscene_off;	
+
+};
+
+void() info_cutscene_think =
+{
+	local vector camorg, camangles;	
+	local entity cam;
+	cam = find (world, targetnamecam2, self.targetcam2);
+	camorg = cam.origin;
+	camangles =  cam.angles;
+	self.rizzoplayer.static_camera_origin = camorg;
+
+	WriteByte(1, SVC_SETANGLE);
+	WriteAngle(1, camangles_x);
+	WriteAngle(1, camangles_y);
+	WriteAngle(1, camangles_z); 
+	self.nextthink = time + self.timecam2;
+	if(self.timecam3)
+	self.think = info_cutscene_think2;
+	else
+	self.think = info_cutscene_off;	
+
+};
+
+void() info_cutscene_use =
+{
+	local vector camorg, camangles;
+	local entity rizzo;
+	rizzo = find (world,classname, "player");
+	self.rizzoplayer = rizzo;	
+	if(!rizzo.static_camera)
+	{
+	rizzo.oldangles  = rizzo.angles;
+	local entity cam;
+	cam = find (world, targetnamecam1, self.targetcam1);
+	camorg = cam.origin;
+	camangles =  cam.angles;
+	rizzo.static_camera_origin = camorg;
+
+	WriteByte(1, SVC_SETANGLE);
+	WriteAngle(1, camangles_x);
+	WriteAngle(1, camangles_y);
+	WriteAngle(1, camangles_z); 
+
+	stuffcmd(rizzo, "m_forward 0\n");
+	stuffcmd(rizzo, "m_pitch 0\n");
+	stuffcmd(rizzo, "m_side 0\n");
+	stuffcmd(rizzo, "m_yaw 0\n");
+	rizzo.static_camera = 1;
+	}
+
+	if(self.timecam2)
+	self.think = info_cutscene_think;
+	else
+	self.think = info_cutscene_off;	
+	self.nextthink = time + self.timecam1;	
+};
+
+void() info_cutscene =
+{
+self.use = info_cutscene_use;
+};
+
+
+.float totalframes;
+void()actor_use_think =
+{
+	if(self.frame >= self.totalframes)
+	self.think = SUB_Null;
+	else
+	{
+	self.frame = self.frame + 1;
+	self.think= actor_use_think;
+	}	
+	self.nextthink = time + 0.07;
+
+};
+
+void()place_actor =
+{
+precache_model (self.model);
+setmodel(self,self.model);
+self.use =  actor_use_think;
+};
 
 
