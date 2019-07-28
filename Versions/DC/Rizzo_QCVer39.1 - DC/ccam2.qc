@@ -54,7 +54,7 @@ self.angles = self.oldangles;
 
 void() ChaseCam_Toggle =    // Toggle Chasecam on/off
 {
- if (!self.camera) {stuffcmd(self, "chase_active 0\nimpulse 15\n");Chasecam_On();} else {stuffcmd(self, "impulse 15\nchase_active 1\n");Chasecam_Off();}
+ if (!self.camera) {Chasecam_On();} else {Chasecam_Off();}
 };
 
 void()info_camera =
@@ -129,10 +129,14 @@ void() trigger_camera =
 void() info_cutscene_off =
 {
 	self.rizzoplayer.static_camera = 0;
+	stuffcmd(self.rizzoplayer, "exec default.cfg\n");
 	stuffcmd(self.rizzoplayer, "m_forward 1\n");
 	stuffcmd(self.rizzoplayer, "m_pitch 0.022\n");
 	stuffcmd(self.rizzoplayer, "m_side 0.8\n");
 	stuffcmd(self.rizzoplayer, "m_yaw 0.022\n");
+	stuffcmd(self.rizzoplayer, "cl_forwardspeed 150\n");
+	stuffcmd(self.rizzoplayer, "cl_sidespeed 100\n");
+	stuffcmd(self.rizzoplayer, "cl_yawspeed 150\n");
 
 };
 
@@ -195,10 +199,39 @@ void() info_cutscene_use =
 	WriteAngle(1, camangles_y);
 	WriteAngle(1, camangles_z); 
 
+//PC	
+	stuffcmd(rizzo, "unbind SPACE\n");
+	stuffcmd(rizzo, "unbind TAB\n");
+	stuffcmd(rizzo, "unbind MOUSE1\n");
+	stuffcmd(rizzo, "unbind JOY1\n");
+	stuffcmd(rizzo, "unbind JOY2\n");
+	stuffcmd(rizzo, "unbind JOY3\n");
+	stuffcmd(rizzo, "unbind JOY4\n");
+	stuffcmd(rizzo, "unbind AUX5\n");
+	stuffcmd(rizzo, "unbind AUX6\n");
+	stuffcmd(rizzo, "unbind AUX7\n");
+	stuffcmd(rizzo, "unbind AUX8\n");
+	stuffcmd(rizzo, "unbind AUX9\n");
+	stuffcmd(rizzo, "unbind AUX10\n");
+	stuffcmd(rizzo, "unbind AUX11\n");
+	stuffcmd(rizzo, "unbind AUX12\n");
+
+// Dreamcast
+	stuffcmd(rizzo, "unbind ENTER\n");
+	stuffcmd(rizzo, "unbind ALT\n");
+	stuffcmd(rizzo, "unbind CTRL\n");
+	stuffcmd(rizzo, "unbind Y\n");
+	stuffcmd(rizzo, "unbind downarrow\n");
+	stuffcmd(rizzo, "unbind uparrow\n");
+
+//Generic
 	stuffcmd(rizzo, "m_forward 0\n");
 	stuffcmd(rizzo, "m_pitch 0\n");
 	stuffcmd(rizzo, "m_side 0\n");
 	stuffcmd(rizzo, "m_yaw 0\n");
+	stuffcmd(rizzo, "cl_forwardspeed 0\n");
+	stuffcmd(rizzo, "cl_sidespeed 0\n");
+	stuffcmd(rizzo, "cl_yawspeed 0\n");
 	rizzo.static_camera = 1;
 	}
 

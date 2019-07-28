@@ -54,7 +54,7 @@ self.angles = self.oldangles;
 
 void() ChaseCam_Toggle =    // Toggle Chasecam on/off
 {
- if (!self.camera) {stuffcmd(self, "chase_active 0\nimpulse 15\n");Chasecam_On();} else {stuffcmd(self, "impulse 15\nchase_active 1\n");Chasecam_Off();}
+ if (!self.camera) {Chasecam_On();} else {Chasecam_Off();}
 };
 
 void()info_camera =
@@ -133,6 +133,9 @@ void() info_cutscene_off =
 	stuffcmd(self.rizzoplayer, "m_pitch 0.022\n");
 	stuffcmd(self.rizzoplayer, "m_side 0.8\n");
 	stuffcmd(self.rizzoplayer, "m_yaw 0.022\n");
+	stuffcmd(self.rizzoplayer, "cl_forwardspeed 150\n");
+	stuffcmd(self.rizzoplayer, "cl_sidespeed 100\n");
+	stuffcmd(self.rizzoplayer, "cl_yawspeed 150\n");
 
 };
 
@@ -199,6 +202,9 @@ void() info_cutscene_use =
 	stuffcmd(rizzo, "m_pitch 0\n");
 	stuffcmd(rizzo, "m_side 0\n");
 	stuffcmd(rizzo, "m_yaw 0\n");
+	stuffcmd(rizzo, "cl_forwardspeed 0\n");
+	stuffcmd(rizzo, "cl_sidespeed 0\n");
+	stuffcmd(rizzo, "cl_yawspeed 0\n");
 	rizzo.static_camera = 1;
 	}
 
