@@ -9,6 +9,7 @@ combat.qc
 items.qc
 weapons.qc
 world.qc
+ccam2.qc
 client.qc
 player.qc
 monsters.qc

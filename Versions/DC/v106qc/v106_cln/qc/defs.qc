@@ -203,7 +203,7 @@ void		end_sys_globals;		// flag for structure dumping
 
 .string		message;		// trigger messages
 
-.float          sounds;         // either a cd track number or sound number
+.float		sounds;		// either a cd track number or sound number
 
 .string		noise, noise1, noise2, noise3;	// contains names of wavs to play
 
@@ -599,7 +599,7 @@ void() traceoff						= #30;
 void(entity e) eprint				= #31;		// prints an entire edict
 float(float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
 // #33 was removed
-float(float yaw, float dist) droptofloor= #34;	// TRUE if landed on floor
+float() droptofloor= #34;	// TRUE if landed on floor
 void(float style, string value) lightstyle = #35;
 float(float v) rint					= #36;		// round to nearest int
 float(float v) floor				= #37;		// largest integer <= v
@@ -631,6 +631,18 @@ void(float to, float f) WriteAngle		= #57;
 void(float to, string s) WriteString	= #58;
 void(float to, entity s) WriteEntity	= #59;
 
+//
+// broadcast client message generation
+//
+
+// void(float f) bWriteByte		= #59;
+// void(float f) bWriteChar		= #60;
+// void(float f) bWriteShort		= #61;
+// void(float f) bWriteLong		= #62;
+// void(float f) bWriteCoord		= #63;
+// void(float f) bWriteAngle		= #64;
+// void(string s) bWriteString	= #65;
+// void(entity e) bWriteEntity = #66;
 
 void(float step) movetogoal				= #67;
 
@@ -677,6 +689,5 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 float (entity e, float healamount, float ignore) T_Heal; // health function
 
 float(entity targ, entity inflictor) CanDamage;
-.vector camview;
-float	SVC_SETVIEW		= 5;
-float	SVC_SETANGLE		= 10;
+
+
