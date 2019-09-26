@@ -168,10 +168,10 @@ local entity t;
 
 	if (self.sounds == 2)
 	{
-		precache_sound ("doors/open.wav");
-		precache_sound ("doors/open.wav");
-		self.noise = "doors/open.wav";
-		self.noise1 = "doors/open.wav";
+		precache_sound ("plats/plat1.wav");
+		precache_sound ("plats/plat2.wav");
+		self.noise = "plats/plat1.wav";
+		self.noise1 = "plats/plat2.wav";
 	}
 
 
@@ -316,10 +316,10 @@ void() func_train =
 
 	if (self.sounds == 1)
 	{
-		self.noise = ("doors/open.wav");
-		precache_sound ("doors/open.wav");
-		self.noise1 = ("doors/open.wav");
-		precache_sound ("doors/open.wav");
+		self.noise = ("misc/null.wav");
+		precache_sound ("misc/null.wav");
+		self.noise1 = ("misc/null.wav");
+		precache_sound ("misc/null.wav");
 	}
 
 	self.cnt = 1;
@@ -357,8 +357,8 @@ void() misc_teleporttrain =
 
 	self.noise = ("misc/null.wav");
 	precache_sound ("misc/null.wav");
-	self.noise1 = ("doors/open.wav");
-	precache_sound ("doors/open.wav");
+	self.noise1 = ("misc/null.wav");
+	precache_sound ("misc/null.wav");
 
 	precache_model2 ("progs/teleport.mdl");
 	setmodel (self, "progs/teleport.mdl");
