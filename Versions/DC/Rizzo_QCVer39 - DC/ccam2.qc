@@ -16,20 +16,15 @@ void() Chasecam_On =
  setsize(self.camera, '-0 -0 -0', '0 0 0');      // Has no size.
  Chasecam_Update();                            // Update cam
  stuffcmd(self, "r_drawviewmodel 0\ncl_bob 0\ncl_rollangle 0\nv_kickpitch 0\nv_kickroll 0\n");
-
+ SetViewPoint(self.camera);
 };
-
-
-.float static_camera_active;
 
 void() Chasecam_Off =
 {
-	stuffcmd(self, "r_drawviewmodel 1\ncl_bob 0.02\ncl_rollangle 2.0\nv_kickpitch 0.6\nv_kickroll 0.6\n");
-	SetViewPoint(self);
-	self.static_camera_active = 0;
-	remove(self.camera);
+ stuffcmd(self, "r_drawviewmodel 1\ncl_bob 0.02\ncl_rollangle 2.0\nv_kickpitch 0.6\nv_kickroll 0.6\n");
+ SetViewPoint(self);
+ remove(self.camera);
 };
-
 
 void() Chasecam_Update =
 {
@@ -50,15 +45,10 @@ local vector camera_origin;
 }
 else
 { 
-	self.angles = self.oldangles;
-	//v_angle =  self.oldangles;
-	camera_origin = self.static_camera_origin;
-	setorigin (self.camera, camera_origin);
-	if(!self.static_camera_active)
-	{
-	SetViewPoint(self.camera);
-	self.static_camera_active = 1;
-	}
+self.angles = self.oldangles;
+//v_angle =  self.oldangles;
+ camera_origin = self.static_camera_origin;
+ setorigin (self.camera, camera_origin);
 }
 };
 
@@ -143,9 +133,6 @@ void() info_cutscene_off =
 	stuffcmd(self.rizzoplayer, "m_pitch 0.022\n");
 	stuffcmd(self.rizzoplayer, "m_side 0.8\n");
 	stuffcmd(self.rizzoplayer, "m_yaw 0.022\n");
-	stuffcmd(self.rizzoplayer, "cl_forwardspeed 150\n");
-	stuffcmd(self.rizzoplayer, "cl_sidespeed 100\n");
-	stuffcmd(self.rizzoplayer, "cl_yawspeed 150\n");
 
 };
 
@@ -212,9 +199,6 @@ void() info_cutscene_use =
 	stuffcmd(rizzo, "m_pitch 0\n");
 	stuffcmd(rizzo, "m_side 0\n");
 	stuffcmd(rizzo, "m_yaw 0\n");
-	stuffcmd(rizzo, "cl_forwardspeed 0\n");
-	stuffcmd(rizzo, "cl_sidespeed 0\n");
-	stuffcmd(rizzo, "cl_yawspeed 0\n");
 	rizzo.static_camera = 1;
 	}
 
@@ -228,28 +212,6 @@ void() info_cutscene_use =
 void() info_cutscene =
 {
 self.use = info_cutscene_use;
-};
-
-
-.float totalframes;
-void()actor_use_think =
-{
-	if(self.frame >= self.totalframes)
-	self.think = SUB_Null;
-	else
-	{
-	self.frame = self.frame + 1;
-	self.think= actor_use_think;
-	}	
-	self.nextthink = time + 0.07;
-
-};
-
-void()place_actor =
-{
-precache_model (self.model);
-setmodel(self,self.model);
-self.use =  actor_use_think;
 };
 
 
