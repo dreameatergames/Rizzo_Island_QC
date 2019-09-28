@@ -104,6 +104,9 @@ void() camon_touch =
 	stuffcmd(other, "m_pitch 0\n");
 	stuffcmd(other, "m_side 0\n");
 	stuffcmd(other, "m_yaw 0\n");
+	stuffcmd(other, "cl_forwardspeed 0\n");
+	stuffcmd(other, "cl_backspeed 0\n");
+	stuffcmd(other, "cl_sidespeed 0\n");
 	other.static_camera = 1;
 	}
 }
@@ -133,6 +136,10 @@ void() info_cutscene_off =
 	stuffcmd(self.rizzoplayer, "m_pitch 0.022\n");
 	stuffcmd(self.rizzoplayer, "m_side 0.8\n");
 	stuffcmd(self.rizzoplayer, "m_yaw 0.022\n");
+	stuffcmd(self.rizzoplayer, "cl_upspeed 200\n");
+	stuffcmd(self.rizzoplayer, "cl_forwardspeed 150\n");
+	stuffcmd(self.rizzoplayer, "cl_backspeed 100\n");
+	stuffcmd(self.rizzoplayer, "cl_sidespeed 100\n");
 
 };
 
@@ -199,6 +206,9 @@ void() info_cutscene_use =
 	stuffcmd(rizzo, "m_pitch 0\n");
 	stuffcmd(rizzo, "m_side 0\n");
 	stuffcmd(rizzo, "m_yaw 0\n");
+	stuffcmd(rizzo, "cl_forwardspeed 0\n");
+	stuffcmd(rizzo, "cl_backspeed 0\n");
+	stuffcmd(rizzo, "cl_sidespeed 0\n");
 	rizzo.static_camera = 1;
 	}
 

@@ -134,10 +134,10 @@ void() worldspawn =
 
 // custom map attributes
 	if (self.model == "maps/menu.bsp")
-		cvar_set ("sbar", "0");
+		cvar_set ("viewsize", "120");
 	else
 	{
-		cvar_set("sbar", "1");
+		cvar_set ("viewsize", "110");
 		cvar_set("impulse", "15");
 	}
 
