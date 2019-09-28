@@ -213,7 +213,7 @@ void() worldspawn =
 	precache_model ("progs/v_light.mdl");
 	
 	precache_model ("progs/hit.spr");	// sprite explosion
-	precache_model ("progs/title.spr");	// sprite explosion
+	precache_model ("progs/title.spr");	// sprite title
 	precache_model ("progs/s_explod.spr");	// sprite explosion
 	
 	precache_model ("progs/victory.mdl");
@@ -244,6 +244,16 @@ void() worldspawn =
 	precache_sound ("slime/hitback.wav");
 	precache_sound ("slime/movement.wav");
 	precache_sound ("slime/die.wav");
+
+//Slime King
+	precache_model ("progs/kslime.mdl");
+	precache_model ("progs/skball.mdl");	
+	precache_model ("progs/skgib.mdl");
+	precache_sound ("bosses/skdie.wav");	
+	precache_sound ("bosses/skgib.wav");
+	precache_sound ("bosses/skhitb.wav");
+	precache_sound ("bosses/skmove.wav");
+
 //
 // Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
 //

@@ -308,10 +308,10 @@ void() func_train =
 
 	if (self.sounds == 0)
 	{
-		self.noise = ("doors/open.wav");
-		precache_sound ("doors/open.wav");
-		self.noise1 = ("doors/open.wav");
-		precache_sound ("doors/open.wav");
+		self.noise = ("misc/null.wav");
+		precache_sound ("misc/null.wav");
+		self.noise1 = ("misc/null.wav");
+		precache_sound ("misc/null.wav");
 	}
 
 	if (self.sounds == 1)
@@ -320,6 +320,14 @@ void() func_train =
 		precache_sound ("doors/open.wav");
 		self.noise1 = ("doors/open.wav");
 		precache_sound ("doors/open.wav");
+	}
+	
+	if (self.sounds == 2)
+	{
+		self.noise = ("misc/h2ohit1.wav");
+		precache_sound ("misc/h2ohit1.wav");
+		self.noise1 = ("misc/h2ohit1.wav");
+		precache_sound ("misc/h2ohit1.wav");
 	}
 
 	self.cnt = 1;

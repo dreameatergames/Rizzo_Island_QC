@@ -23,65 +23,29 @@ slime
 
 ==============================================================================
 */
-void()	s_explode1	=	[0,		s_explode2] {};
-void()	s_explode2	=	[1,		s_explode3] {};
-void()	s_explode3	=	[3,		SUB_Remove] {};
+void()	ks_explode1	=	[0,		ks_explode2] {};
+void()	ks_explode2	=	[1,		ks_explode3] {};
+void()	ks_explode3	=	[3,		SUB_Remove] {};
 
 
-void() BecomeExplosion =
+void() kBecomeExplosion =
 {
 	self.movetype = MOVETYPE_NONE;
 	self.velocity = '0 0 0';
 	self.touch = SUB_Null;
 	setmodel (self, "progs/s_explod.spr");
 	self.solid = SOLID_NOT;
-	s_explode1 ();
+	ks_explode1 ();
 };
+void() T_MissileTouch;
 
-void() T_MissileTouch =
-{
-	local float	damg;
-
-	if (other == self.owner)
-		return;		// don't explode on owner
-
-	if (pointcontents(self.origin) == CONTENT_SKY)
-	{
-		remove(self);
-		return;
-	}
-
-	damg = 1;
-	
-	if (other.health)
-	{
-		if (other.classname == "monster_shambler")
-			damg = damg * 0.5;	// mostly immune
-		T_Damage (other, self, self.owner, damg );
-	}
-
-	// don't do radius damage to the other, because all the damage
-	// was done in the impact
-	T_RadiusDamage (self, self.owner, 120, other);
-
-//	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-	self.origin = self.origin - 8*normalize(self.velocity);
-
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
-
-	BecomeExplosion ();
-};
-void() slime_run1;
+void() kslime_run1;
 .float waitattack;
 
-void() slimeGrenadeExplode =
+void() kslimeGrenadeExplode =
 {
 	T_Damage (self, self.owner, self.owner, 1);
-	sound (self, CHAN_VOICE, "slime/gib.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "bosses/skgib.wav", 1, ATTN_NORM);
 	self.owner.waitattack = 0;
 	T_Damage (other, self, self.owner, 1);
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
@@ -97,12 +61,12 @@ void() slimeGrenadeExplode =
 	s_explode1 ();
 };
 
-void() slimeGrenadeTouch =
+void() kslimeGrenadeTouch =
 {
 	if (other == self.owner)
 		return;		// don't explode on owner
-		slimeGrenadeExplode();
-	sound (self, CHAN_VOICE, "slime/hitback.wav", 1, ATTN_NORM);	// bounce sound
+		kslimeGrenadeExplode();
+	sound (self, CHAN_VOICE, "bosses/skhitb.wav", 1, ATTN_NORM);	// bounce sound
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
@@ -112,7 +76,7 @@ void() slimeGrenadeTouch =
 slimeFireGrenade
 ================
 */
-void() slimeGrenadeVel =
+void() kslimeGrenadeVel =
 {
 	self.owner.waitattack = 0;
 	self.owner = self.enemy;
@@ -120,7 +84,7 @@ void() slimeGrenadeVel =
 	self.velocity = self.velocity * -1;
 }
 
-void() slimeGrenadeThink =
+void() kslimeGrenadeThink =
 {
 local entity pl;
 pl = find(world, classname, "player");
@@ -128,9 +92,9 @@ local float dbt;
 
 dbt = vlen (self.origin - pl.origin);
 
-if (dbt < 120)
+if (dbt < 200)
 {
-setsize (self, '-20 -20 -20', '20 20 20');	
+setsize (self, '-51 -54 -51', '47 -45 43');	
 }
 else
 {
@@ -141,34 +105,16 @@ setsize (self, '-4 -4 -4', '4 4 4');
 self.cnt -= 1;
 
 if( self.cnt <0)
-self.think = slimeGrenadeExplode;
+self.think = kslimeGrenadeExplode;
 else
-self.think = slimeGrenadeThink;
+self.think = kslimeGrenadeThink;
 
 
 self.nextthink = time + 0.1;
 
 }
 
-void() slimeMelee =
-{
-	local vector	delta;
-	local float 	ldmg;
-
-	if (!self.enemy)
-		return;		// removed before stroke
-		
-	delta = self.enemy.origin - self.origin;
-
-	if (vlen(delta) < 60)
-	{
-	ldmg = 0.5;
-	T_Damage (self.enemy, self, self, ldmg);
-	sound (self, CHAN_WEAPON, "slime/hit.wav", 1, ATTN_NORM);
-	}
-};
-
-void() slimeFireGrenade =
+void() kslimeFireGrenade =
 {
 	local	entity missile, mpuff;
 	
@@ -185,31 +131,31 @@ void() slimeFireGrenade =
 	makevectors (self.angles);
 
 	missile.velocity = normalize(self.enemy.origin - self.origin);
-	missile.velocity = missile.velocity * 128;
+	missile.velocity = missile.velocity * 350;
 
 	missile.avelocity = '300 300 300';
 	missile.classname = "slimeball";
 	missile.angles = vectoangles(missile.velocity);
 	
-	missile.touch = slimeGrenadeTouch;
+	missile.touch = kslimeGrenadeTouch;
 	missile.health = 150;
 	missile.takedamage = DAMAGE_AIM;
-	missile.th_die = slimeGrenadeExplode;
-	missile.th_pain = slimeGrenadeVel;
+	missile.th_die = kslimeGrenadeExplode;
+	missile.th_pain = kslimeGrenadeVel;
 	missile.cnt = 150;
 // set missile duration
 	missile.nextthink = time;
-	missile.think = slimeGrenadeThink;
+	missile.think = kslimeGrenadeThink;
 
 	setmodel (missile, "progs/skball.mdl");
-	setsize (missile, '-4 -4 -4', '4 4 4');	
+	setsize (missile, '-32 -32 -24', '32 32 64');	
 	setorigin (missile, self.origin);
 };
 
 .float idle_frame;
-void() slime_stand2;
+void() kslime_stand2;
 
-void() slime_stand1	=
+void() kslime_stand1	=
 {
 
 if(self.idle_frame == 1)
@@ -221,18 +167,18 @@ self.idle_frame = 1;
 local float random_idle;
 random_idle = random();
 if(random_idle > 0.3)
-self.think = slime_stand1;
+self.think = kslime_stand1;
 else
-self.think = slime_stand2;
+self.think = kslime_stand2;
 }
 else
-self.think = slime_stand1;
+self.think = kslime_stand1;
 ai_stand();
 self.nextthink = time + 0.1;
 
 };
 
-void() slime_stand2	=
+void() kslime_stand2	=
 {
 if(self.idle_frame == 1)
 self.frame = 2;
@@ -243,203 +189,195 @@ self.idle_frame = 1;
 local float random_idle;
 random_idle = random();
 if(random_idle > 0.3)
-self.think = slime_stand1;
+self.think = kslime_stand1;
 else
-self.think = slime_stand2;
+self.think = kslime_stand2;
 }
 else
-self.think = slime_stand2;
+self.think = kslime_stand2;
 ai_stand();
 self.nextthink = time + 0.1;
 
 };
 
 
-void() slime_walk1	=[	3 ,	slime_walk2	] {
+void() kslime_walk1	=[	3 ,	kslime_walk2	] {
 if (random() < 0.2)
-	sound (self, CHAN_VOICE, "slime/movement.wav", 1, ATTN_IDLE);
+	sound (self, CHAN_VOICE, "bosses/skmove.wav", 1, ATTN_IDLE);
 ai_walk(8);};
-void() slime_walk2	=[	4 ,	slime_walk3	] {ai_walk(4);};
-void() slime_walk3	=[	5 ,	slime_walk4	] {ai_walk(4);};
-void() slime_walk4	=[	6 ,	slime_walk5	] {ai_walk(4);};
-void() slime_walk5	=[	7 ,	slime_walk6	] {ai_walk(4);};
-void() slime_walk6	=[	8 ,	slime_walk7	] {ai_walk(4);};
-void() slime_walk7	=[	9 ,	slime_walk8	] {ai_walk(4);};
-void() slime_walk8	=[	10 ,	slime_walk9	] {ai_walk(4);};
-void() slime_walk9	=[	11 ,	slime_walk10	] {ai_walk(4);};
-void() slime_walk10	=[	12 ,	slime_walk11	] {ai_walk(4);};
-void() slime_walk11	=[	13 ,	slime_walk12	] {ai_walk(4);};
-void() slime_walk12	=[	14 ,	slime_walk13	] {ai_walk(4);};
-void() slime_walk13	=[	15 ,	slime_walk14	] {ai_walk(4);};
-void() slime_walk14	=[	16 ,	slime_walk15	] {ai_walk(4);};
-void() slime_walk15	=[	17 ,	slime_walk16	] {ai_walk(4);};
-void() slime_walk16	=[	18 ,	slime_walk17	] {ai_walk(4);};
-void() slime_walk17	=[	19 ,	slime_walk18	] {ai_walk(4);};
-void() slime_walk18	=[	20 ,	slime_walk19	] {ai_walk(4);};
-void() slime_walk19	=[	21 ,	slime_walk20	] {ai_walk(4);};
-void() slime_walk20	=[	22 ,	slime_walk21	] {ai_walk(4);};
-void() slime_walk21	=[	23 ,	slime_walk22	] {ai_walk(4);};
-void() slime_walk22	=[	24 ,	slime_walk23	] {ai_walk(4);};
-void() slime_walk23	=[	25 ,	slime_walk24	] {ai_walk(4);};
-void() slime_walk24	=[	26 ,	slime_walk1	] {ai_walk(4);};
+void() kslime_walk2	=[	4 ,	kslime_walk3	] {ai_walk(4);};
+void() kslime_walk3	=[	5 ,	kslime_walk4	] {ai_walk(4);};
+void() kslime_walk4	=[	6 ,	kslime_walk5	] {ai_walk(4);};
+void() kslime_walk5	=[	7 ,	kslime_walk6	] {ai_walk(4);};
+void() kslime_walk6	=[	8 ,	kslime_walk7	] {ai_walk(4);};
+void() kslime_walk7	=[	9 ,	kslime_walk8	] {ai_walk(4);};
+void() kslime_walk8	=[	10 ,	kslime_walk9	] {ai_walk(4);};
+void() kslime_walk9	=[	11 ,	kslime_walk10	] {ai_walk(4);};
+void() kslime_walk10	=[	12 ,	kslime_walk11	] {ai_walk(4);};
+void() kslime_walk11	=[	13 ,	kslime_walk12	] {ai_walk(4);};
+void() kslime_walk12	=[	14 ,	kslime_walk13	] {ai_walk(4);};
+void() kslime_walk13	=[	15 ,	kslime_walk14	] {ai_walk(4);};
+void() kslime_walk14	=[	16 ,	kslime_walk15	] {ai_walk(4);};
+void() kslime_walk15	=[	17 ,	kslime_walk16	] {ai_walk(4);};
+void() kslime_walk16	=[	18 ,	kslime_walk17	] {ai_walk(4);};
+void() kslime_walk17	=[	19 ,	kslime_walk18	] {ai_walk(4);};
+void() kslime_walk18	=[	20 ,	kslime_walk19	] {ai_walk(4);};
+void() kslime_walk19	=[	21 ,	kslime_walk20	] {ai_walk(4);};
+void() kslime_walk20	=[	22 ,	kslime_walk21	] {ai_walk(4);};
+void() kslime_walk21	=[	23 ,	kslime_walk22	] {ai_walk(4);};
+void() kslime_walk22	=[	24 ,	kslime_walk23	] {ai_walk(4);};
+void() kslime_walk23	=[	25 ,	kslime_walk24	] {ai_walk(4);};
+void() kslime_walk24	=[	26 ,	kslime_walk1	] {ai_walk(4);};
 
-void() slime_run1	=[	3 ,	slime_run2	] {
+void() kslime_run1	=[	3 ,	kslime_run2	] {
 if (random() < 0.2)
-	sound (self, CHAN_VOICE, "slime/movement.wav", 1, ATTN_IDLE);
+	sound (self, CHAN_VOICE, "bosses/skmove.wav", 1, ATTN_IDLE);
 ai_run(8);};
-void() slime_run2	=[	4 ,	slime_run3	] {ai_run(6);};
-void() slime_run3	=[	5 ,	slime_run4	] {ai_run(8);};
-void() slime_run4	=[	6 ,	slime_run5	] {ai_run(6);};
-void() slime_run5	=[	7 ,	slime_run6	] {ai_run(8);};
-void() slime_run6	=[	8 ,	slime_run7	] {ai_run(6);};
-void() slime_run7	=[	9 ,	slime_run8	] {ai_run(7);};
-void() slime_run8	=[	10 ,	slime_run9	] {ai_run(9);};
-void() slime_run9	=[	11 ,	slime_run10	] {ai_run(8);};
-void() slime_run10	=[	12 ,	slime_run11	] {ai_run(10);};
-void() slime_run11	=[	13 ,	slime_run12	] {ai_run(8);};
-void() slime_run12	=[	14 ,	slime_run13	] {ai_run(6);};
-void() slime_run13	=[	15 ,	slime_run14	] {ai_run(5);};
-void() slime_run14	=[	16 ,	slime_run15	] {ai_run(7);};
-void() slime_run15	=[	17 ,	slime_run16	] {ai_run(8);};
-void() slime_run16	=[	18 ,	slime_run17	] {ai_run(9);};
-void() slime_run17	=[	19 ,	slime_run18	] {ai_run(8);};
-void() slime_run18	=[	20 ,	slime_run19	] {ai_run(8);};
-void() slime_run19	=[	21 ,	slime_run20	] {ai_run(7);};
-void() slime_run20	=[	22 ,	slime_run21	] {ai_run(6);};
-void() slime_run21	=[	23 ,	slime_run22	] {ai_run(5);};
-void() slime_run22	=[	24 ,	slime_run23	] {ai_run(7);};
-void() slime_run23	=[	25 ,	slime_run24	] {ai_run(8);};
-void() slime_run24	=[	26 ,	slime_run1	] {ai_run(9);};
+void() kslime_run2	=[	4 ,	kslime_run3	] {ai_run(6);};
+void() kslime_run3	=[	5 ,	kslime_run4	] {ai_run(8);};
+void() kslime_run4	=[	6 ,	kslime_run5	] {ai_run(6);};
+void() kslime_run5	=[	7 ,	kslime_run6	] {ai_run(8);};
+void() kslime_run6	=[	8 ,	kslime_run7	] {ai_run(6);};
+void() kslime_run7	=[	9 ,	kslime_run8	] {ai_run(7);};
+void() kslime_run8	=[	10 ,	kslime_run9	] {ai_run(9);};
+void() kslime_run9	=[	11 ,	kslime_run10	] {ai_run(8);};
+void() kslime_run10	=[	12 ,	kslime_run11	] {ai_run(10);};
+void() kslime_run11	=[	13 ,	kslime_run12	] {ai_run(8);};
+void() kslime_run12	=[	14 ,	kslime_run13	] {ai_run(6);};
+void() kslime_run13	=[	15 ,	kslime_run14	] {ai_run(5);};
+void() kslime_run14	=[	16 ,	kslime_run15	] {ai_run(7);};
+void() kslime_run15	=[	17 ,	kslime_run16	] {ai_run(8);};
+void() kslime_run16	=[	18 ,	kslime_run17	] {ai_run(9);};
+void() kslime_run17	=[	19 ,	kslime_run18	] {ai_run(8);};
+void() kslime_run18	=[	20 ,	kslime_run19	] {ai_run(8);};
+void() kslime_run19	=[	21 ,	kslime_run20	] {ai_run(7);};
+void() kslime_run20	=[	22 ,	kslime_run21	] {ai_run(6);};
+void() kslime_run21	=[	23 ,	kslime_run22	] {ai_run(5);};
+void() kslime_run22	=[	24 ,	kslime_run23	] {ai_run(7);};
+void() kslime_run23	=[	25 ,	kslime_run24	] {ai_run(8);};
+void() kslime_run24	=[	26 ,	kslime_run1	] {ai_run(9);};
 
 
-void() slime_atta1	=[	27,	slime_atta2	] {ai_face();};
-void() slime_atta2	=[	28,	slime_atta3	] {ai_face();};
-void() slime_atta3	=[	29,	slime_atta4	] {ai_face();};
-void() slime_atta4	=[	30,	slime_atta5	] {
+void() kslime_atta1	=[	27,	kslime_atta2	] {ai_face();};
+void() kslime_atta2	=[	28,	kslime_atta3	] {ai_face();};
+void() kslime_atta3	=[	29,	kslime_atta4	] {ai_face();};
+void() kslime_atta4	=[	30,	kslime_atta5	] {
 
-if (self.skin == 1)
-{
-ai_charge(4);
-slimeMelee();
-}
-else
-slimeFireGrenade();
-sound (self, CHAN_VOICE, "slime/gib.wav", 1, ATTN_NORM);
+kslimeFireGrenade();
+sound (self, CHAN_VOICE, "bosses/skgib.wav", 1, ATTN_NORM);
 
 };
-void() slime_atta5	=[	31,	slime_atta6	] {};
-void() slime_atta6	=[	32,	slime_atta7	] {};
-void() slime_atta7	=[	33,	slime_atta8	] {};
-void() slime_atta8	=[	34,	slime_atta9	] {};
-void() slime_atta9	=[	35,	slime_atta10	] {};
-void() slime_atta10	=[	36,	slime_atta11	] {};
-void() slime_atta11	=[	37,	slime_atta12	] {};
-void() slime_atta12	=[	38,	slime_atta13	] {};
-void() slime_atta13	=[	39,	slime_atta14	] {};
-void() slime_atta14	=[	40,	slime_atta15	] {};
-void() slime_atta15	=[	41,	slime_atta16	] {};
-void() slime_atta16	=[	42,	slime_atta17	] {};
-void() slime_atta17	=[	43,	slime_atta18	] {};
-void() slime_atta18	=[	44,	slime_atta19	] {};
-void() slime_atta19	=[	45,	slime_atta20	] {};
-void() slime_atta20	=[	46,	slime_atta21	] {};
-void() slime_atta21	=[	47,	slime_atta22	] {};
-void() slime_atta22	=[	48,	slime_atta23	] {};
-void() slime_atta23	=[	49,	slime_atta24	] {};
-void() slime_atta24	=[	50,	slime_atta25	] {};
-void() slime_atta25	=[	51,	slime_atta26	] {};
-void() slime_atta26	=[	52,	slime_atta27	] {};
-void() slime_atta27	=[	53,	slime_atta28	] {};
-void() slime_atta28	=[	54,	slime_atta29	] {};
-void() slime_atta29	=[	55,	slime_atta30	] {};
-void() slime_atta30	=[	56,	slime_atta31	] {};
-void() slime_atta31	=[	57,	slime_atta32	] {};
-void() slime_atta32	=[	58,	slime_atta33	] {};
-void() slime_atta33	=[	59,	slime_run1	] {};
+void() kslime_atta5	=[	31,	kslime_atta6	] {};
+void() kslime_atta6	=[	32,	kslime_atta7	] {};
+void() kslime_atta7	=[	33,	kslime_atta8	] {};
+void() kslime_atta8	=[	34,	kslime_atta9	] {};
+void() kslime_atta9	=[	35,	kslime_atta10	] {};
+void() kslime_atta10	=[	36,	kslime_atta11	] {};
+void() kslime_atta11	=[	37,	kslime_atta12	] {};
+void() kslime_atta12	=[	38,	kslime_atta13	] {};
+void() kslime_atta13	=[	39,	kslime_atta14	] {};
+void() kslime_atta14	=[	40,	kslime_atta15	] {};
+void() kslime_atta15	=[	41,	kslime_atta16	] {};
+void() kslime_atta16	=[	42,	kslime_atta17	] {};
+void() kslime_atta17	=[	43,	kslime_atta18	] {};
+void() kslime_atta18	=[	44,	kslime_atta19	] {};
+void() kslime_atta19	=[	45,	kslime_atta20	] {};
+void() kslime_atta20	=[	46,	kslime_atta21	] {};
+void() kslime_atta21	=[	47,	kslime_atta22	] {};
+void() kslime_atta22	=[	48,	kslime_atta23	] {};
+void() kslime_atta23	=[	49,	kslime_atta24	] {};
+void() kslime_atta24	=[	50,	kslime_atta25	] {};
+void() kslime_atta25	=[	51,	kslime_atta26	] {};
+void() kslime_atta26	=[	52,	kslime_atta27	] {};
+void() kslime_atta27	=[	53,	kslime_atta28	] {};
+void() kslime_atta28	=[	54,	kslime_atta29	] {};
+void() kslime_atta29	=[	55,	kslime_atta30	] {};
+void() kslime_atta30	=[	56,	kslime_atta31	] {};
+void() kslime_atta31	=[	57,	kslime_atta32	] {};
+void() kslime_atta32	=[	58,	kslime_atta33	] {};
+void() kslime_atta33	=[	59,	kslime_run1	] {};
 
-void() slime_atta =
+void() kslime_atta =
 {
 if (!self.waitattack)
-self.think = slime_atta1;
+self.think = kslime_atta1;
 else
-self.think = slime_run1;
+self.think = kslime_run1;
 self.nextthink = time;
 }
 
 
-void() slime_pain =
+void() kslime_pain =
 {
 };
 
 
-void() slime_die =
+void() kslime_die =
 {
 // check for gib
 
-		sound (self, CHAN_VOICE, "slime/gib.wav", 1, ATTN_NORM);
-		ThrowGib ("progs/s_gib.mdl", self.health);
-		ThrowGib ("progs/s_gib.mdl", self.health);
-		ThrowGib ("progs/s_gib.mdl", self.health);
-		ThrowHead ("progs/s_gib.mdl", self.health);
-		self.think = SUB_Null;
-		self.nextthink = time + 1;
+		sound (self, CHAN_VOICE, "bosses/skgib.wav", 1, ATTN_NORM);
+		ThrowGib ("progs/skgib.mdl", self.health);
+		ThrowGib ("progs/skgib.mdl", self.health);
+		ThrowGib ("progs/skgib.mdl", self.health);
+		ThrowHead ("progs/skgib.mdl", self.health);
+		self.think = SUB_Remove;
+		self.nextthink = time + 3;
 };
 
 
 //===========================================================================
 
-/*QUAKED monster_slime (1 0 0) (-32 -32 -24) (32 32 40) Ambush
+/*QUAKED monster_kslime (1 0 0) (-263 -142 -236) (406 283 256) Ambush
 
 */
-void() monster_slime_spawn =
+void() monster_kslime_spawn =
 {
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
-	setmodel (self, "progs/s_king.mdl");
+	setmodel (self, "progs/kslime.mdl");
 
-	setsize (self, '-32 -32 -24', '32 32 40');
-	self.health = 10;
-	self.th_stand = slime_stand1;
-	self.th_walk = slime_walk1;
-	self.th_run = slime_run1;
-	self.th_pain = slime_pain;
-	self.th_die = slime_die;
-	self.th_melee = slime_atta1;
-	self.th_missile = slime_atta1;
+	setsize (self, '-263 -142 -236', '406 283 256');
+	self.health = 1;
+	self.th_stand = kslime_stand1;
+	self.th_walk = kslime_walk1;
+	self.th_run = kslime_run1;
+	self.th_pain = kslime_pain;
+	self.th_die = kslime_die;
+	self.th_melee = kslime_atta1;
+	self.th_missile = kslime_atta1;
 
 	walkmonster_start();
 }
-void() monster_slime =
+void() monster_kslime =
 {
 	if (deathmatch)
 	{
 		remove(self);
 		return;
 	}
-	precache_model ("progs/s_king.mdl");
-	precache_sound ("slime/gib.wav");
-	precache_sound ("slime/hit.wav");
-	precache_sound ("slime/hitback.wav");
-	precache_sound ("slime/movement.wav");
-	precache_sound ("slime/die.wav");
+	precache_model ("progs/kslime.mdl");
+	precache_sound ("bosses/skgib.wav");
+	precache_sound ("bosses/skhit.wav");
+	precache_sound ("bosses/skhitb.wav");
+	precache_sound ("bosses/skmove.wav");
+	precache_sound ("bosses/sdie.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
-	setmodel (self, "progs/s_king.mdl");
+	setmodel (self, "progs/kslime.mdl");
 
-	setsize (self, '-32 -32 -24', '32 32 40');
+	setsize (self, '-263 -142 -236', '406 283 256');
 	self.health = 10;
 	self.idle_frame = 1;
-	self.th_stand = slime_stand1;
-	self.th_walk = slime_walk1;
-	self.th_run = slime_run1;
-	self.th_pain = slime_pain;
-	self.th_die = slime_die;
-	if(self.skin == 1)
-	self.th_melee = slime_atta;
-	self.th_missile = slime_atta;
+	self.th_stand = kslime_stand1;
+	self.th_walk = kslime_walk1;
+	self.th_run = kslime_run1;
+	self.th_pain = kslime_pain;
+	self.th_die = kslime_die;
+	self.th_missile = kslime_atta;
 
 	walkmonster_start();
 };
