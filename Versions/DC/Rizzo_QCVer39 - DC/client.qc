@@ -150,7 +150,7 @@ void() ExitIntermission =
 //
 	if (intermission_running == 2)
 	{
-		if (world.model == "maps/e1m3.bsp")
+		if (world.model == "maps/e2m1.bsp")
 		{
 			WriteByte (MSG_ALL, SVC_CDTRACK);
 			WriteByte (MSG_ALL, 2);

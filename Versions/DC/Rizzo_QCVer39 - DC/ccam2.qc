@@ -136,7 +136,6 @@ void() info_cutscene_off =
 	stuffcmd(self.rizzoplayer, "m_pitch 0.022\n");
 	stuffcmd(self.rizzoplayer, "m_side 0.8\n");
 	stuffcmd(self.rizzoplayer, "m_yaw 0.022\n");
-	stuffcmd(self.rizzoplayer, "cl_upspeed 200\n");
 	stuffcmd(self.rizzoplayer, "cl_forwardspeed 150\n");
 	stuffcmd(self.rizzoplayer, "cl_backspeed 100\n");
 	stuffcmd(self.rizzoplayer, "cl_sidespeed 100\n");
