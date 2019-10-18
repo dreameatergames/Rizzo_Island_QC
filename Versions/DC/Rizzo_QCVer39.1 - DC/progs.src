@@ -1,0 +1,25 @@
+../progs.dat
+
+defs.qc
+skinfix.qc		// 1998-06-21 Invalid skin and GLQuake body color workaround by Robert Field
+subs.qc
+fight.qc
+ai.qc
+combat.qc
+items.qc
+ccam2.qc
+weapons.qc
+world.qc
+client.qc
+player.qc
+monsters.qc
+doors.qc
+buttons.qc
+triggers.qc
+plats.qc
+misc.qc
+
+
+slime.qc		// rizzo specific
+pirate.qc
+s_king.qc
